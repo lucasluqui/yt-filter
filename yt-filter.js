@@ -1,12 +1,11 @@
-const MINIMUM_VIEWS = 2000;
-const EXECUTION_INTERVAL = 500;
+const LOW_VIEWS_FILTER_MIN_VIEWS = 2000;
+const LOW_VIEWS_FILTER_EXECUTION_INTERVAL = 100;
+const LOW_VIEWS_FILTER_MAX_RUNS = 50;
+
+var lowViewsFilterRuns = 0;
 
 console.log("[yt-filter] loaded");
-
-const interval = setInterval(function() {
-    console.log("[yt-filter] running filter");
-    filterLowViewsVideos();
-  }, EXECUTION_INTERVAL);
+filterLowViewsVideos();
 
 function filterLowViewsVideos() {
     const videos = document.getElementsByTagName("ytd-rich-grid-media");
@@ -16,12 +15,17 @@ function filterLowViewsVideos() {
         try {
             const rawViews = metadata[0].innerHTML.split(" views")[0].split("ytd-video-meta-block\">")[6];
             var views = convertViewsStringToInt(rawViews);
-            if (views < MINIMUM_VIEWS) {
+            if (views < LOW_VIEWS_FILTER_MIN_VIEWS) {
                 video.remove();
             }
         } catch {
-            // empty
+            console.log("[yt-filter] error in parsing video views");
         }
+    }
+
+    lowViewsFilterRuns += 1;
+    if (lowViewsFilterRuns < LOW_VIEWS_FILTER_MAX_RUNS) {
+        setTimeout(filterLowViewsVideos, LOW_VIEWS_FILTER_EXECUTION_INTERVAL);
     }
 }
 
