@@ -1,14 +1,14 @@
 {
-    "manifest_version": 2,
-    "name": "yt-filter",
-    "version": "1.0",
-    "description": "Extension to filter YouTube's homepage recommended videos",
-    "icons": {},
-    "content_scripts": [
-      {
-        "matches": ["*://*.youtube.com/*"],
-        "js": ["yt-filter.js"]
-      }
-    ]
-  }
+  "manifest_version": 2,
+  "name": "yt-filter",
+  "version": "1.0",
+  "description": "Extension to filter YouTube's homepage recommended videos",
+  "icons": {},
+  "content_scripts": [
+    {
+      "matches": ["*://*.youtube.com/*"],
+      "js": ["yt-filter.js"]
+    }
+  ]
+}
   
