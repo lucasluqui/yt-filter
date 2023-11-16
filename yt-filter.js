@@ -1,4 +1,10 @@
-const LOW_VIEWS_FILTER_MIN_VIEWS = 2000;
+/**
+ * yt-filter
+ * Author: Lucas Allegri
+ * https://github.com/lucasluqui/yt-filter
+ */
+
+const LOW_VIEWS_FILTER_MIN_VIEWS = 2500;
 const LOW_VIEWS_FILTER_EXECUTION_INTERVAL = 100;
 const LOW_VIEWS_FILTER_MAX_RUNS = 50;
 
@@ -10,7 +16,7 @@ filterLowViewsVideos();
 function filterLowViewsVideos() {
   const videos = document.getElementsByTagName("ytd-rich-grid-media");
   
-  console.log("[yt-filter] processing filters for: " + videos.length);
+  console.log("[yt-filter] processing filters for amount: " + videos.length);
   
   for (var video of videos) {
     const metadata = video.getElementsByTagName("ytd-video-meta-block");
@@ -19,7 +25,7 @@ function filterLowViewsVideos() {
       var views = convertViewsStringToInt(rawViews);
       
       if (views < LOW_VIEWS_FILTER_MIN_VIEWS) {
-        video.remove();
+        deleteVideoFromView(video, views);
       }
     } catch {
       console.log("[yt-filter] error in parsing video views");
@@ -30,6 +36,19 @@ function filterLowViewsVideos() {
   if (lowViewsFilterRuns < LOW_VIEWS_FILTER_MAX_RUNS) {
     setTimeout(filterLowViewsVideos, LOW_VIEWS_FILTER_EXECUTION_INTERVAL);
   }
+}
+
+function deleteVideoFromView(video, views) {
+  console.log("[yt-filter] removing " + getVideoName(video) + " by " + getVideoAuthor(video) + " with " + views + " views from view");
+  video.remove()
+}
+
+function getVideoName(video) {
+  return video.querySelector("#video-title").innerHTML;
+}
+
+function getVideoAuthor(video) {
+  return video.getElementsByTagName("ytd-channel-name")[0].innerHTML.split("title=\"")[1].split("\"")[0];
 }
 
 function convertViewsStringToInt(rawViews) {
@@ -44,6 +63,8 @@ function convertViewsStringToInt(rawViews) {
   } else {
     total = Number(rawViews);
   }
+
+  console.log("[yt-filter] converted " + rawViews + " to: " + total);
 
   return total;
 }
